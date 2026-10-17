@@ -17,10 +17,8 @@ jobs:
         include:
           - os: windows-latest
             artifact_name: voice-desktop-windows
-            output_file: dist/Voice.exe
           - os: ubuntu-22.04
             artifact_name: voice-desktop-linux
-            output_file: dist/Voice
 
     steps:
       - name: Checkout Repository
@@ -44,15 +42,9 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build Standalone Executable (Windows)
-        if: runner.os == 'Windows'
+      - name: Build Standalone Executable
         run: |
-          pyinstaller --noconfirm --onedir --windowed --name "Voice" --clean main.py
-
-      - name: Build Standalone Executable (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          pyinstaller --noconfirm --onedir --windowed --name "Voice" --clean main.py
+          pyinstaller --noconfirm --onedir --windowed --name "Voice" --clean --collect-all pynput --collect-all pystray main.py
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
